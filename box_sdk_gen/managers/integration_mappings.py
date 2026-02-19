@@ -530,7 +530,7 @@ class IntegrationMappingsManager:
         extra_headers: Optional[Dict[str, Optional[str]]] = None
     ) -> IntegrationMappingsOneDrive:
         """
-        Lists [OneDrive integration mappings](https://support.box.com/hc/en-us/articles/360044481414-Using-Box-for-OneDrive) in a users' enterprise.
+        Lists [OneDrive integration mappings](https://support.box.com/hc/en-us/articles/360044481414-Using-Box-for-OneDrive) in a user's enterprise.
 
         You need Admin or Co-Admin role to
 

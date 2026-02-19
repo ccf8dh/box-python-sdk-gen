@@ -10,11 +10,10 @@ class IntegrationMappingOneDriveOptions(BaseObject):
         self, *, is_access_management_disabled: Optional[bool] = None, **kwargs
     ):
         """
-        :param is_access_management_disabled: Indicates whether or not channel member
+        :param is_access_management_disabled: Indicates whether or not user
         access to the underlying box item
         should be automatically managed.
-        Depending on the type of the channel,
-        access is managed through creating collaborations or shared links., defaults to None
+        Access is managed through creating collaborations or shared links., defaults to None
         :type is_access_management_disabled: Optional[bool], optional
         """
         super().__init__(**kwargs)
