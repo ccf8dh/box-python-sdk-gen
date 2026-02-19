@@ -170,6 +170,18 @@ from box_sdk_gen.schemas.integration_mapping_slack_options import *
 
 from box_sdk_gen.schemas.integration_mapping_slack_create_request import *
 
+from box_sdk_gen.schemas.integration_mapping_partner_item_onedrive import *
+
+from box_sdk_gen.schemas.integration_mapping_onedrive import *
+
+from box_sdk_gen.schemas.integration_mappings_onedrive import *
+
+from box_sdk_gen.schemas.integration_mapping_partner_item_onedrive_create_request import *
+
+from box_sdk_gen.schemas.integration_mapping_onedrive_create_request import *
+
+from box_sdk_gen.schemas.integration_mapping_onedrive_options import *
+
 from box_sdk_gen.schemas.keyword_skill_card import *
 
 from box_sdk_gen.schemas.legal_hold_policy_mini import *

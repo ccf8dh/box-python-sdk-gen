@@ -48,6 +48,18 @@ from box_sdk_gen.schemas.integration_mapping_teams_create_request import (
 
 from box_sdk_gen.schemas.folder_reference import FolderReference
 
+from box_sdk_gen.schemas.integration_mappings_onedrive import IntegrationMappingsOneDrive
+
+from box_sdk_gen.schemas.integration_mapping_onedrive import IntegrationMappingOneDrive
+
+from box_sdk_gen.schemas.integration_mapping_partner_item_onedrive_create_request import (
+    IntegrationMappingPartnerItemOneDriveCreateRequest,
+)
+
+from box_sdk_gen.schemas.integration_mapping_onedrive_options import (
+    IntegrationMappingOneDriveOptions,
+)
+
 from box_sdk_gen.box.errors import BoxSDKError
 
 from box_sdk_gen.networking.auth import Authentication
@@ -83,6 +95,15 @@ class GetTeamsIntegrationMappingPartnerItemType(str, Enum):
 
 
 class GetTeamsIntegrationMappingBoxItemType(str, Enum):
+    FOLDER = 'folder'
+
+
+class GetOneDriveIntegrationMappingPartnerItemType(str, Enum):
+    FOLDER = 'folder'
+    DRIVE = 'drive'
+
+
+class GetOneDriveIntegrationMappingBoxItemType(str, Enum):
     FOLDER = 'folder'
 
 
@@ -487,6 +508,208 @@ class IntegrationMappingsManager:
                     [
                         self.network_session.base_urls.base_url,
                         '/2.0/integration_mappings/teams/',
+                        to_string(integration_mapping_id),
+                    ]
+                ),
+                method='DELETE',
+                headers=headers_map,
+                response_format=ResponseFormat.NO_CONTENT,
+                auth=self.auth,
+                network_session=self.network_session,
+            )
+        )
+        return None
+
+    def get_onedrive_integration_mapping(
+        self,
+        *,
+        partner_item_type: Optional[GetOneDriveIntegrationMappingPartnerItemType] = None,
+        partner_item_id: Optional[str] = None,
+        box_item_id: Optional[str] = None,
+        box_item_type: Optional[GetOneDriveIntegrationMappingBoxItemType] = None,
+        extra_headers: Optional[Dict[str, Optional[str]]] = None
+    ) -> IntegrationMappingsOneDrive:
+        """
+        Lists [OneDrive integration mappings](https://support.box.com/hc/en-us/articles/360044481414-Using-Box-for-OneDrive) in a user's enterprise.
+
+        You need Admin or Co-Admin role to
+
+
+        use this endpoint.
+
+        :param partner_item_type: Mapped item type, for which the mapping should be returned, defaults to None
+        :type partner_item_type: Optional[GetOneDriveIntegrationMappingPartnerItemType], optional
+        :param partner_item_id: ID of the mapped item, for which the mapping should be returned, defaults to None
+        :type partner_item_id: Optional[str], optional
+        :param box_item_id: Box item ID, for which the mappings should be returned, defaults to None
+        :type box_item_id: Optional[str], optional
+        :param box_item_type: Box item type, for which the mappings should be returned, defaults to None
+        :type box_item_type: Optional[GetOneDriveIntegrationMappingBoxItemType], optional
+        :param extra_headers: Extra headers that will be included in the HTTP request., defaults to None
+        :type extra_headers: Optional[Dict[str, Optional[str]]], optional
+        """
+        if extra_headers is None:
+            extra_headers = {}
+        query_params_map: Dict[str, str] = prepare_params(
+            {
+                'partner_item_type': to_string(partner_item_type),
+                'partner_item_id': to_string(partner_item_id),
+                'box_item_id': to_string(box_item_id),
+                'box_item_type': to_string(box_item_type),
+            }
+        )
+        headers_map: Dict[str, str] = prepare_params({**extra_headers})
+        response: FetchResponse = self.network_session.network_client.fetch(
+            FetchOptions(
+                url=''.join(
+                    [
+                        self.network_session.base_urls.base_url,
+                        '/2.0/integration_mappings/onedrive',
+                    ]
+                ),
+                method='GET',
+                params=query_params_map,
+                headers=headers_map,
+                response_format=ResponseFormat.JSON,
+                auth=self.auth,
+                network_session=self.network_session,
+            )
+        )
+        return deserialize(response.data, IntegrationMappingsOneDrive)
+
+    def create_onedrive_integration_mapping(
+        self,
+        partner_item: IntegrationMappingPartnerItemOneDriveCreateRequest,
+        box_item: FolderReference,
+        *,
+        options: Optional[IntegrationMappingOneDriveOptions] = None,
+        extra_headers: Optional[Dict[str, Optional[str]]] = None
+    ) -> IntegrationMappingOneDrive:
+        """
+        Creates a [OneDrive integration mapping](https://support.box.com/hc/en-us/articles/360044481414-Using-Box-for-OneDrive)
+
+        by mapping a OneDrive folder or drive to a Box item.
+
+
+        You need Admin or Co-Admin role to
+
+
+        use this endpoint.
+
+        :param options: Optional settings for the OneDrive integration mapping, defaults to None
+        :type options: Optional[IntegrationMappingOneDriveOptions], optional
+        :param extra_headers: Extra headers that will be included in the HTTP request., defaults to None
+        :type extra_headers: Optional[Dict[str, Optional[str]]], optional
+        """
+        if extra_headers is None:
+            extra_headers = {}
+        request_body: Dict = {
+            'partner_item': partner_item,
+            'box_item': box_item,
+            'options': options,
+        }
+        headers_map: Dict[str, str] = prepare_params({**extra_headers})
+        response: FetchResponse = self.network_session.network_client.fetch(
+            FetchOptions(
+                url=''.join(
+                    [
+                        self.network_session.base_urls.base_url,
+                        '/2.0/integration_mappings/onedrive',
+                    ]
+                ),
+                method='POST',
+                headers=headers_map,
+                data=serialize(request_body),
+                content_type='application/json',
+                response_format=ResponseFormat.JSON,
+                auth=self.auth,
+                network_session=self.network_session,
+            )
+        )
+        return deserialize(response.data, IntegrationMappingOneDrive)
+
+    def update_onedrive_integration_mapping_by_id(
+        self,
+        integration_mapping_id: str,
+        *,
+        box_item: Optional[FolderReference] = None,
+        options: Optional[IntegrationMappingOneDriveOptions] = None,
+        extra_headers: Optional[Dict[str, Optional[str]]] = None
+    ) -> IntegrationMappingOneDrive:
+        """
+                Updates a [OneDrive integration mapping](https://support.box.com/hc/en-us/articles/360044481414-Using-Box-for-OneDrive).
+
+                Supports updating the Box folder ID and options.
+
+
+                You need Admin or Co-Admin role to
+
+
+                use this endpoint.
+
+                :param integration_mapping_id: An ID of an integration mapping
+        Example: "11235432"
+                :type integration_mapping_id: str
+                :param box_item: The Box folder to update the mapping to, defaults to None
+                :type box_item: Optional[FolderReference], optional
+                :param options: Optional settings for the OneDrive integration mapping, defaults to None
+                :type options: Optional[IntegrationMappingOneDriveOptions], optional
+                :param extra_headers: Extra headers that will be included in the HTTP request., defaults to None
+                :type extra_headers: Optional[Dict[str, Optional[str]]], optional
+        """
+        if extra_headers is None:
+            extra_headers = {}
+        request_body: Dict = {'box_item': box_item, 'options': options}
+        headers_map: Dict[str, str] = prepare_params({**extra_headers})
+        response: FetchResponse = self.network_session.network_client.fetch(
+            FetchOptions(
+                url=''.join(
+                    [
+                        self.network_session.base_urls.base_url,
+                        '/2.0/integration_mappings/onedrive/',
+                        to_string(integration_mapping_id),
+                    ]
+                ),
+                method='PUT',
+                headers=headers_map,
+                data=serialize(request_body),
+                content_type='application/json',
+                response_format=ResponseFormat.JSON,
+                auth=self.auth,
+                network_session=self.network_session,
+            )
+        )
+        return deserialize(response.data, IntegrationMappingOneDrive)
+
+    def delete_onedrive_integration_mapping_by_id(
+        self,
+        integration_mapping_id: str,
+        *,
+        extra_headers: Optional[Dict[str, Optional[str]]] = None
+    ) -> None:
+        """
+                Deletes a [OneDrive integration mapping](https://support.box.com/hc/en-us/articles/360044481414-Using-Box-for-OneDrive).
+
+                You need Admin or Co-Admin role to
+
+
+                use this endpoint.
+
+                :param integration_mapping_id: An ID of an integration mapping
+        Example: "11235432"
+                :type integration_mapping_id: str
+                :param extra_headers: Extra headers that will be included in the HTTP request., defaults to None
+                :type extra_headers: Optional[Dict[str, Optional[str]]], optional
+        """
+        if extra_headers is None:
+            extra_headers = {}
+        headers_map: Dict[str, str] = prepare_params({**extra_headers})
+        response: FetchResponse = self.network_session.network_client.fetch(
+            FetchOptions(
+                url=''.join(
+                    [
+                        self.network_session.base_urls.base_url,
+                        '/2.0/integration_mappings/onedrive/',
                         to_string(integration_mapping_id),
                     ]
                 ),
